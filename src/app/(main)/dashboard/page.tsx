@@ -1,13 +1,19 @@
 import { LogoutButton } from '@/components/logout'
 import { buttonVariants } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { getAuth } from '@/lib/auth-options'
 import { getAllTodo } from '@/lib/queries'
 import { CheckCircle, CircleX } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function DashboardPage () {
+  const user = await getAuth()
+  const email = user?.user?.email
+
+  if (!email) throw new Error('User not found')
   const allTodo = await getAllTodo()
-  console.log('🚀 ~ DashboardPage ~ allTodo:', allTodo)
+
+  if (allTodo.length <= 0) return <h1>No hay todos</h1>
 
   return (
     <div className='px-4 pt-6 flex flex-col gap-4 w-full items-center justify-center'>
